@@ -1,0 +1,20 @@
+CREATE 
+    ALGORITHM = UNDEFINED 
+    DEFINER = `root`@`localhost` 
+    SQL SECURITY DEFINER
+VIEW `one_piece`.`target_list` AS
+    SELECT 
+        `ch`.`char_name` AS `char_name`,
+        `pl`.`power_level_desc` AS `power_level_desc`,
+        `ch`.`bounty` AS `bounty`,
+        `one_piece`.`haki`.`haki_type` AS `haki_type`,
+        (CASE
+            WHEN (`ch`.`bounty` >= 30000000) THEN 'High value target'
+            WHEN (`ch`.`bounty` BETWEEN 20000000 AND 299999999) THEN 'Mid value target'
+            WHEN (`ch`.`bounty` BETWEEN 10000000 AND 199999999) THEN 'Low value target'
+            WHEN (`ch`.`bounty` = 0) THEN 'Marine - Ignore'
+        END) AS `Bounty values`
+    FROM
+        ((`one_piece`.`characters` `ch`
+        JOIN `one_piece`.`power_level` `pl` ON ((`ch`.`power_level_id` = `pl`.`power_level_id`)))
+        JOIN `one_piece`.`haki` ON ((`ch`.`haki_num` = `one_piece`.`haki`.`haki_num`)))
